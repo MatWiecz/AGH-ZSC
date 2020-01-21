@@ -1,0 +1,276 @@
+\documentclass[a4paper,oneside,11pt]{report}
+\usepackage[T1]{fontenc}
+\usepackage[polish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{latexsym}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{graphicx} % the demo option is just for the example
+\usepackage{amssymb}
+\usepackage{titling}
+\usepackage{pdfpages}
+\usepackage{enumerate}
+\hyphenpenalty = 10000
+\author{Mateusz Wieczorek}
+\title{Rastrowy projektor laserowy\\
+Dokumentacja techniczna}
+
+\pretitle{
+  	\begin{center}
+	\\~\\
+	\includegraphics[scale=1]{LogoAGH.png}\\[\bigskipamount]
+	\textbf{Złożone systemy cyfrowe
+	\\
+	2019/2020
+	\\~\\
+	}
+	
+	
+}
+\posttitle{\end{center}}
+\pagestyle{empty}
+\definecolor{forered}{rgb}{0.5,0,0}
+\definecolor{foregreen}{rgb}{0,0.5,0}
+\definecolor{foreblue}{rgb}{0,0,0.5}
+\definecolor{foremagenta}{rgb}{0.5,0,0.5}
+\definecolor{foreyellow}{rgb}{0.5,0.5,0}
+\definecolor{forecyan}{rgb}{0,0.5,0.5}
+\definecolor{foreblack}{rgb}{0,0,0}
+\definecolor{foregray}{rgb}{0.5,0.5,0.5}
+\definecolor{backwhite}{rgb}{0.9,0.9,0.9}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backwhite},   
+    commentstyle=\color{foregray},
+    keywordstyle=\color{foreyellow},
+    numberstyle=\tiny\color{foreblack},
+    stringstyle=\color{forecyan},
+    basicstyle=\fontsize{8}{10}\selectfont\ttfamily,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+ 
+\lstset{style=mystyle}
+
+\begin{document}\sloppy
+\maketitle
+\tableofcontents
+\newpage
+\section{Cel projektu.}
+Celem niniejszego projektu jest pogłębienie wiedzy i praktycznego doświadczenia w zakresie projektowania, konstruowania, budowania i programowania złożonego systemu cyfrowego. Ostatecznie celem projektu będzie w miarę możliwości otrzymanie działającego urządzenia, który będzie pełnił przedstawione później funkcje.
+
+Zaprojektowane przeze mnie urządzenie powinno pełnić rolę projektora, który będzie w stanie wyświetlić obraz o wystarczająco dobrej rozdzielczośći, który zostanie podany na wejście VGA. Obraz będzie wyświetlany po przez bardzo szybkie skanowanie wiązką laserową w osi pionowej i poziomej, wiązka laserowa będzie tworzyć poziome linie. W ten sposób uzyskamy obraz rastrowy (nie wektorowy jak w przypadku standardowych projektorów laserowych).
+\section{Założenia projektu}
+Głównymi założeniami są:
+\begin{enumerate}[a)]
+\item dostępność materiałów konstrukcyjnych w możliwie najniższych cenach:
+\begin{enumerate}[-]
+\item programowalny układ cyfrowy służący do zarządzania pracą urządzenia
+\item lasery na prąd elektryczny służące jako źródło światła
+\item silniki elektryczne służące jako układ odchylający wiązkę laserową w poziomie i pionie
+\item materiał na walce, które zostaną zamontowane na osiach silników, oraz małe zwierciadełka
+\item ewentualne soczewki pozwalające na korekcje wiązki laserowej
+\item zwierciadła dichroiczne
+\item czujniki obrotów
+\item wszelakie okablowanie
+\item części na obudowę urządzenia, komponentów oraz szkielet
+\end{enumerate}
+\item dostępność wolnego czasu
+\item brak większych trudności w zakresie praw fizyki uniemożliwiających konstrukcję urządzenia
+\item dostępność narzędzi do zbudowania urządzenia
+\end{enumerate}
+\section{Zastosowany układ cyfrowy}
+Do sterowania pracą całego urządzenia użyję układu ATmega
+
+\section{Kolejne etapy rozwoju projektu.}
+\begin{enumerate}[1.]
+\item Urządzenie powinno rysować z jak największą częstotliwością poziomą linię.
+
+Prosty układ powinien wyświetlać poziomą linię z jak największą częstotliwością. Na tym etapie będzie wymagane odpowiednie podłączenie lasera do układu cyfrowego, który będzie źródłem światła, oraz silnika elektrycznej charakteryzującego się wysokimi obrotami. Laser powinno się dać włączać i wyłączać programowo, tak samo powinno się dać sterować i kontrolować obroty silnika elektrycznego. Na osi silnika powinien być zamontowany płaski walec, na którego powierzchni bocznej będą przyklejone symetrycznie zwierciadełka o wymiarach 1cm x 1cm. Ten komponent będzie odpowiedzialny za odchylanie wiązki w kierunku poziomym. Ilość rysowanych linii w ciągu sekundy będzie miała znaczenie w kwestii pionowej rozdzielczości oraz częśtotliwości odżwierzania obrazu.
+
+\item Urządzenie powinno rysować z jak największą częstotliwośćią jak najwięcej poziomych linii.
+
+Do układu powinien zostać domontowany dodatkowy silnik elektryczny charakteryzujący się niskimi obrotami, na osi którego będzie zamontowany podobny jak wcześniej walec z przyklejonymi zwierciadełkami na jego powierzchni bocznej. Ten komponent będzie odpowiedzialny za odchylenie odchylonej wcześniej wiązki laserowej w kierunku pionowym.
+
+\item Wszystkie komponenty urządzenia powinny zostać odpowiednio zsynchronizowane.
+
+Należy odpowiednio zsynchronizować prędkości obrotowe obydwu silników elektrycznych według następujących relacji:
+
+$N_E_H$ - prędkość obrotowa silnika elektrycznego służącego do odchylania wiązki w kierunku poziomym $[obr./min.]$
+
+$N_E_V$ - prędkość obrotowa silnika elektrycznego służącego do odchylania wiązki w kierunku pionowym $[obr./min.]$
+
+$M_E_H$ - ilość zwierciadełek przyklejonych na powierchni bocznej walca służącego do odchylania wiązki w kierunku poziomym $[j.]$
+
+$M_E_V$ - ilość zwierciadełek przyklejonych na powierchni bocznej walca służącego do odchylania wiązki w kierunku pionowym $[j.]$
+
+$W_V$ - rozdzielczość wyświetlanego obrazu w poziomie $[j.]$
+
+$H_V$ - rozdzielczość wyświetlanego obrazu w pionie $[j.]$
+
+$F_V$ - częstotliwość wyświetlania obrazu $[Hz]$
+
+$H_V * F_V = N_E_H * M_E_H / 60$
+
+$F_V = N_E_V * M_E_V$
+
+\item Urządzenie powinno umożliwiać kontrolę nad wyświetlanym obrazem.
+
+Należy zsynchronizować włączanie i wyłączanie lasera razem z prędkościami obrotowymi silników w taki sposób, żeby móc zapalać lub wygaszać odpowiedni piksel wyświetlany na ekranie. Aby zarządzać stanem piksela o współrzędnych $x$ i $y$ w danej klatce, należy kontrolować napięcie przyłożone na laser w przedziale czasowym $t = [(1 / F_V) * (y * W_V + x) / (W_V * H_V)), (1 / F_V) * (y * W_V + x + 1) / (W_V * H_V)]$
+
+\item Urządzenie powinno odpowiednio analizować sygnał podany na wejściu VGA oraz skalować odbierany obraz.
+
+Układ cyfrowy powinien prawidłowo interpretować sygnał podawany na wejściu VGA, oraz skalować przesyłany obraz do rozdzielczości natywnej urządzenia za pomocą zwykłego algorytmu nearest-neighbour.
+
+\item Urządzenie powinno być w stanie wyświetlić obraz podawany na wejściu VGA w formacie monochromatycznym.
+
+Urządzenie powinno sterować stanem wszystkich pikseli na podstawie odbieranego sygnału na wejściu VGA. Dany piksel powinien się zapalić wtedy i tylko wtedy, gdy chociaż jedna składowa transmitowanego piksela będzie nie mniejsza niż 50\% intensywności.
+
+\item Urządzenie powinno być w stanie wyświetlić obraz podawany na wejsciu VGA w formacie odcieni szarości.
+
+Urządzenie powinno sterować stanem wszystkich pikseli na podstawie odbieranego sygnału na wejściu VGA. Dany piksel powinien mieć intensywność równą kolorowi RGB transmitowanego piksela rzutowanego na odcienie szarości.
+
+\item Urządzenie powinno być w stanie wyświetlić obraz podawany na wejściu VGA w formacie RGB.
+
+Urządzenie powinno sterować stanem wszystkich pikseli na podstawie odbieranego sygnału na wejściu VGA. Aby osiągnąć model RGB, należy do całego układu domontować lasery o kolorze niebieskim i zielonym, odpowiednio kontrolować napięcie na nich, oraz zwierciadła dichroiczne, które będą scalać wiązki różnych kolorów w pojedynczą wiązkę. Napięcie dla poszczególnych laserów powinno być wprost proporcjonalne do wartości odpowiednich składowych transmitowanego piksela. 
+
+\end{enumerate}
+
+Implementacja interpolacji wielomianowej Lagrange’a:
+\lstinputlisting[linerange={1-16}, caption=Implementacja interpolacji wielomianowej Lagrange’a.]{scripts.jl}
+
+Powyżej przedstawiona funkcja przyjmuje tablicę dwu-wymiarową węzłów do interpolacji w postaci $[[x_1 , y_1 ], [x_2 , y_2 ], ..., [x_n , y_n ]]$, gdzie $x_i$ i $y_i$ są współrzędnymi i-tego węzła do interpolacji, a $n$ to jest liczba wszystkich węzłów (w kodzie przechowywana jako nodesNum). W implementowaniu tej metody posłużyłem się wprost końcowym wzorem na wielomian interpolacyjny, który na sam koniec jest przechowywany i zwracany przy użyciu zmiennej interPoly. Zewnętrzna pętla for oznacza sumie występującej we wzorze, natomiast wewnętrzna odpowiada iloraz.
+
+Zaimplementowaną funkcję stestowałem przy użyciu kodu przedstawionego poniżej:
+\lstinputlisting[linerange={124-155}, caption=Testowanie funkcji interpolującej węzły za pomocą metody Lagrange’a.]{scripts.jl}
+
+Kod źródłowy z listingu 2. składa się z kilku ważniejszych etapów. Pierwszym z nich jest
+wygenerowanie 4 zestawów węzłów do interpolacji, po 11 węzłów na każdy zestaw. Ta ilość wynika z ustalonego przeze mnie przedziału na osi $X = [-100, 100]$ (tak, aby dla $x = 0$ występował węzeł). Dla potrzeb późniejszego zastosowania algorytmu interpolacji Newtona, węzły te są równoodległe od siebie. Na osi Y również przyjąłem taki sam przedział. Wygenerowane zestawy węzłów zostaną później użyte w innych metodach interpolacji.
+
+Kolejnym etapem jest interpolowanie każdego z 4 zestawów węzłów metodą Lagrange’a oraz wygenerowanie wykresu, na którym będą zaznaczone węzły danego zestawu oraz wielomian interpolujący te węzły.
+
+Ostatnim etapem jest wyświetlenie wszystkich wykresów w odpowiedni sposób.
+
+Wynik uruchomienia powyższego skryptu przedstawia figure 1. Przedstawione są na nim cztery wykresy – każdy jeden został utworzony na podstawie odpowiedniego zestawu węzłów.
+
+Jak można dostrzec, napisana przeze mnie funkcja prawidłowo interpoluje wszystkie węzły, ponieważ wykres wielomianu interpolującego zawiera w sobie każdy z tych węzłów.
+
+\begin{figure}[htp] \centering{
+\includegraphics[scale=0.3]{figure-1.pdf}}
+\caption{Wynik uruchomienia skryptu z listingu 2.}
+\end{figure}
+\newpage
+\section{Własna implementacja interpolacji wielomianowej Newton’a.}
+Implementacja interpolacji wielomianowej Newton’a:
+\lstinputlisting[linerange={18-52}, caption=Implementacja interpolacji wielomianowej Newton’a.]{scripts.jl}
+
+Powyżej przedstawiona funkcja przyjmuje tablicę dwu-wymiarową węzłów do interpolacji w postaci $[[x_1 , y_1 ], [x_2 , y_2 ], ..., [x_n , y_n ]]$, gdzie $x_i$ i $y_i$ są współrzędnymi i-tego węzła do interpolacji, a $n$ to jest liczba wszystkich węzłów (w kodzie przechowywana jako nodesNum). W implementowaniu tej metody również posłużyłem się wprost końcowym wzorem na wielomian interpolacyjny. Dodatkowo wprowadziłem pewne optymalizacje, żeby nie wyliczać kilka razy tych samych danych. Na samym początku obliczane są współczynniki dla każdego z wyrazów sumy wielomianu interpolującego, które będą przechowywane w pierwszym wierszu macierzy, która posłużyła mi do tych obliczeń. Na koniec krokowo tworzę wzór wielomianu interpolującego, który na sam koniec jest przechowywany i zwracany przy użyciu zmiennej interPoly.
+
+Należy zaznaczyć, że funkcja zakłada równoodległość dostarczonych węzłów do interpolacji.
+
+Zaimplementowaną funkcję stestowałem przy użyciu kodu przedstawionego poniżej:
+\lstinputlisting[linerange={159-179}, caption=Testowanie funkcji interpolującej węzły za pomocą metody Newton’a.]{scripts.jl}
+
+Kod źródłowy z listingu 4. składa się z dwóch ważniejszych etapów. Pierwszym z nich jest interpolowanie każdego z 4 zestawów węzłów metodą Newton’a oraz wygenerowanie wykresu, na którym będą zaznaczone węzły danego zestawu oraz wielomian interpolujący te węzły.
+
+Drugin etapem jest wyświetlenie wszystkich wykresów w odpowiedni sposób.
+
+Wynik uruchomienia powyższego skryptu przedstawia figure 2. Przedstawione są na nim cztery wykresy – każdy jeden został utworzony na podstawie odpowiedniego zestawu węzłów.
+
+Jak można dostrzec, napisana przeze mnie funkcja prawidłowo interpoluje wszystkie węzły, ponieważ wykres wielomianu interpolującego zawiera w sobie każdy z tych węzłów. Ponadto porównując te wykresy z odpowiednimi wykresami z figure 1. (odpowiednie zestawy węzłów) można zauważyć, ze wykresy są identyczne $\rightarrow$ obie metody musiały zwrócić ten sam wielomian.
+\begin{figure}[htp] \centering{
+\includegraphics[scale=0.3]{figure-2.pdf}}
+\caption{Wynik uruchomienia skryptu z listingu 4.}
+\end{figure}
+\newpage
+\section{Wykorzystanie interpolacji wielomianowej z pakietu Polynomials oraz podsumowanie dotychczasowych metod na jednym wykresie.}
+
+\lstinputlisting[linerange={183-209}, caption=Wykorzystanie funkcji polyfit z pakietu Polynomials w celu znalezienia wielomianu interpolującego wygenerowane wsześniej węzły oraz narysowanie wykresów wielomianów interpolujących osiągniętych za pomocą trzech różnych metod/funkcji.]{scripts.jl}
+
+Kod źródłowy z listingu 5. składa się z dwóch ważniejszych etapów. Pierwszym z nich jest interpolowanie każdego z 4 zestawów węzłów za pomocą metody Lagrange’a, następnie Newton’a, i na koniec za pomocą funkcji polyfit z pakieru Polynomials, jak też chciano w poleceniu.
+
+Drugin etapem jest wyświetlenie wszystkich wykresów
+
+Wynik uruchomienia powyższego skryptu przedstawia figure 3. Przedstawione są na nim cztery wykresy w odpowiedni sposób: jeden wykres = jeden zestaw węzłów = 3 metody interpolacji.
+
+Na przedstawionych wykresach najlepiej widać, jak wszystkie trzy użyte implementacje (w tym dwie własne) zwracają ten sam wynik, zarówno w postaci wykresu wielomianu interpolującego, jak i jego wzoru. Dzieje się tak dlatego, ponieważ wielomiany interpolujące węzły muszą je zawierać, a więc dla skończonej ilości ściśle określonych argumentów muszą przyjmować ściśle określone wartości, przy określeniu jedynie jednego wspólnego wzoru dla całego przedziału. Można z tego wywnioskować, że wielomian interpolujący węzły nie zależy od metody interpolacji, ale tylko od rozmieszczenia węzłów do interpolacji.
+\begin{figure}[htp] \centering{
+\includegraphics[scale=0.3]{figure-3.pdf}}
+\caption{Wynik uruchomienia skryptu z listingu 5.}
+\end{figure}
+\newpage
+\section{Porównanie opisanych wcześniej metod interpolacji pod względem czasu interpolowania, interpolacja funkcjami sklejanymi a interpolacja wielomianami, demonstracja efektu Runge'go.}
+
+\lstinputlisting[linerange={58-109}, caption=Wykorzystanie funkcji polyfit z pakietu Polynomials w celu znalezienia wielomianu interpolującego wygenerowane wsześniej węzły oraz narysowanie wykresów wielomianów interpolujących osiągniętych za pomocą trzech różnych metod/funkcji.]{scripts.jl}
+
+\lstinputlisting[linerange={113-119}, caption=Wyświetlanie wykresu prezentującego analizę czasu wyszukiwania wielomianu interpolującego węzły w zależności od ilości tych węzłów\, dla trzech różnych implementacji.]{scripts.jl}
+
+Wykonując kolejno skrypty z listingów 6. oraz 7. można otrzymać wykres przedstawiający przykładową analizę czasową wyszukiwania wielomianu interpolującego węzły w zależności od ich ilości oraz użytej implementacji. Przykładową analizę przedstawia wykres z figure 4.
+\begin{figure}[htp] \centering{
+\includegraphics[scale=0.8]{figure-5.pdf}}
+\caption{Wykres zależności czasu wyszukiwania wielomianu interpolującego węzły w zależności od ich ilości oraz użytej implementacji.}
+\end{figure}
+\newpage
+Na wykresie z figure 4. zostały przedstawione średnie czasy wykonania odpowiednich metod w zależności od ilości przekazanych węzłów, wraz ze słupkami błędów reprezentujących odchylenie standardowe z 10 pomiarów na każdą sytuację.
+
+Sensowny wykres bardzo trudno było uzyskać z powodu bardzo mały czasów wykonywania i minimalnych zakłóceń wykonywania na serwerach JuliaBox. Dlatego też zredukowałem maksymalną ilość węzłów do 21, gdyż dodatkowo dla większej ilości nie możliwe było obliczenie silnii i zapisanie jej wyniku do odpowiedniej zmiennej typu Int.
+
+Z przedstawionego wykresu można wywnioskować, że złożoność czasowa metody Newton’a, jak i funkcji polyfit z pakietu Polynomials jest niemalże jednostkowa, natomiast metody Lagrange’a – liniowa.
+
+Uruchamiając jedynie skrypt z listingu 6. można otrzymać przykładowy zbiór wykresów, przedstawiony na figure 5.
+
+Na wykresach tego zbioru zostały nie tylko pokazane wykresy wielomianów interpolujących węzły za pomocą różnych metod, ale i wykresy interpolacji węzłów funkcjami sklejanymi (w tym funkcjami liniowymi i trzeciego stopnia). Na podstawie tych wykresów można wysunąć poniższe wnioski:
+\begin{enumerate}[a)]
+\item interpolacja funkcjami liniowymi jest to po prostu zwykłe łączenie punktów odcinkami (nie zalecane do przedstawiania danych na wykresie, szczególnie w fizyce);
+\item interpolacja funkcjami trzeciego stopnia bardzo ładnie zachowuje się w bliskich otoczeniach węzłów (funkcja jest gładka, nie tak jak w przypadku interpolacji funkcjami liniowymi);
+\item funkcją sklejana interpolująca zadane węzły ma wykres leżący w pobliżu węzłów, natomiast w przypadku interpolacji wielomianem wykres znacząco odbiega od węzłów na krańcach przedziału, amplituda wykresu zaczyna drastycznie rosnąć (opisany później efekt Runge'go).
+\end{enumerate}
+Na kolejnych wykresach z tego samego zbioru można dostrzec pewną wadę interpolacji wielomianami – wraz ze wzrostem ilości węzłów podlegających interpolacji wartości wielomianu interpolującego węzły na krańcach przedziału zaczynają mocno oscylować z szybko rosnącą amplitudą. Ta wada jest nazywana efektem Runge'go.
+
+Efekt Runge’go jest to pogorszenie jakości interpolacji wielomianowej, pomimo zwiększenia liczby interpolowanych węzłów (naprzeciw rozsądkowi). To zjawisko jest spowodowane głównie interpolowaniem wielomianami wysokich stopni przy nałożonym warunku równoodległości węzłów.
+\begin{figure}[htp] \centering{
+\includegraphics[scale=0.3]{figure-4.pdf}}
+\caption{Wynik uruchomienia skryptu z listingu 6.}
+\end{figure}
+\newpage
+\section{Algorytmy interpolacji stosowane w grafice komputerowej (na
+przykładzie powiększania obrazu w programie GIMP).}
+W programie GIMP można się spotkać z następującymi metodami interpolacji podczas skalowania warstwy lub całego obrazu: linear, cubic oraz brak interpolacji - none. Teraz postaram się opisać każdą z tych metod w prosty sposób.
+
+Mając bazowy obraz o wymiarach 16x16, taki jak przedstawiony na ilustracji 1., metoda interpolacji lub brak w przypadku powiększenia obrazu 4-krotnie spowoduje poniżej opisany efekt:
+
+\begin{table}[h]
+\fontsize{8pt}{10pt}
+\selectfont
+\begin{tabular}{|p{3.4cm}|p{8.4cm}|} \hline
+a) none:  & \\ \hline
+\vspace \ \includegraphics[scale=2.0]{none-alg.png} &
+Na przykładzie skalowania obrazka 3x3 px (piksele zostały zaznaczone „obecnością czerwonego koloru”) do rozmiaru 6x4 px (piksele zostały zaznaczone „obecnością zielonego koloru”). Nakładając i odpowiednio rozciągając obrazek wyjściowy na wejściowy, otrzymamy odpowiednie wzajemne rozmieszczenie pikseli. Każdy piksel z obrazka wyjściowego osiągnie kolor piksela obrazka wejściowego, który leży najbliżej niego (przykładowe zostały zaznaczone szarymi liniami). Ilustracja 2. \\ \hline
+a) linear:  & \\ \hline
+\vspace \ \includegraphics[scale=2.0]{linear-alg.png} &
+Na przykładzie skalowania obrazka 3x3 px (piksele zostały zaznaczone „obecnością czerwonego koloru”) do rozmiaru 11x7 px (piksele zostały zaznaczone „obecnością zielonego koloru”). Nakładając i odpowiednio rozciągając obrazek wyjściowy na wejściowy, otrzymamy odpowiednie wzajemne rozmieszczenie pikseli. Łączymy sąsiednie piksele obrazka wejściowego abstrakcyjnymi liniami, które są liniowym gradientem przechodzącym od koloru piksela na jednym końcu do koloru piksela z drugiego końca. Takie postępowanie można przyrównać do interpolacji funkcją sklejaną (liniowymi), gdzie węzłami są piksele obrazka wejściowego. W taki sposób otrzymamy siatkę funkcji interpolujących (poziomych i pionowych). (przykładowe abstrakcyjne linie zaznaczone szarymi liniami, w tym na jednej został pokazany gradient od czerwonego do niebieskiego). Ilustracja 3. \\ \hline
+a) cubic:  & \\ \hline
+\vspace \ \includegraphics[scale=2.0]{cubic-alg.png} &
+Przykład został przygotowany w sposób analogiczny do przykładu dla interpolacji liniowej. Różnica w tym sposobie interpolacji polega jedynie na zastąpieniu interpolacji funkcji sklejanej (liniowymi) na interpolację funkcją sklejaną (wielomianami trzeciego stopnia). W ten sposób można otrzymać siatkę funkcji interpolujących (poziomych i pionowych), jedna taka siatka na jedną składową koloru. Piksel obrazka wyjściowego skorzysta z wartości składowych z siatek w punktach, gdzie on występuje. Ilustracja 4. \\ \hline
+\end{tabular}
+\begin{tabular}{c c c c}
+\includegraphics[scale=1.0]{base.png} &
+\includegraphics[scale=1.0]{none.png} &
+\includegraphics[scale=1.0]{linear.png} &
+\includegraphics[scale=1.0]{cubic.png} \\
+Ilustracja 1. base &
+Ilustracja 2. none &
+Ilustracja 3. linear &
+Ilustracja 4. cubic \\
+\end{tabular}
+\end{table}
+\end{document}
