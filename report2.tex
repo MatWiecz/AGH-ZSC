@@ -65,11 +65,12 @@ Dokumentacja techniczna}
 \maketitle
 \tableofcontents
 \newpage
-\section{Cel projektu.}
+\section{Wstępny plan projektu.}
+\subsection{Cel projektu.}
 Celem niniejszego projektu jest pogłębienie wiedzy i praktycznego doświadczenia w zakresie projektowania, konstruowania, budowania i programowania złożonego systemu cyfrowego. Ostatecznie celem projektu będzie w miarę możliwości otrzymanie działającego urządzenia, który będzie pełnił przedstawione później funkcje.
 
 Zaprojektowane przeze mnie urządzenie powinno pełnić rolę projektora, który będzie w stanie wyświetlić obraz o wystarczająco dobrej rozdzielczośći, który zostanie podany na wejście VGA. Obraz będzie wyświetlany po przez bardzo szybkie skanowanie wiązką laserową w osi pionowej i poziomej, wiązka laserowa będzie tworzyć poziome linie. W ten sposób uzyskamy obraz rastrowy (nie wektorowy jak w przypadku standardowych projektorów laserowych).
-\section{Założenia projektu}
+\subsection{Założenia projektu.}
 Głównymi założeniami są:
 \begin{enumerate}[a)]
 \item dostępność materiałów konstrukcyjnych w możliwie najniższych cenach:
@@ -88,10 +89,10 @@ Głównymi założeniami są:
 \item brak większych trudności w zakresie praw fizyki uniemożliwiających konstrukcję urządzenia
 \item dostępność narzędzi do zbudowania urządzenia
 \end{enumerate}
-\section{Zastosowany układ cyfrowy}
+\subsection{Zastosowany układ cyfrowy}
 Do sterowania pracą całego urządzenia użyję układu ATmega
 
-\section{Kolejne etapy rozwoju projektu.}
+\subsection{Kolejne etapy rozwoju projektu.}
 \begin{enumerate}[1.]
 \item Urządzenie powinno rysować z jak największą częstotliwością poziomą linię.
 
@@ -144,133 +145,221 @@ Urządzenie powinno sterować stanem wszystkich pikseli na podstawie odbieranego
 Urządzenie powinno sterować stanem wszystkich pikseli na podstawie odbieranego sygnału na wejściu VGA. Aby osiągnąć model RGB, należy do całego układu domontować lasery o kolorze niebieskim i zielonym, odpowiednio kontrolować napięcie na nich, oraz zwierciadła dichroiczne, które będą scalać wiązki różnych kolorów w pojedynczą wiązkę. Napięcie dla poszczególnych laserów powinno być wprost proporcjonalne do wartości odpowiednich składowych transmitowanego piksela. 
 
 \end{enumerate}
-
-Implementacja interpolacji wielomianowej Lagrange’a:
-\lstinputlisting[linerange={1-16}, caption=Implementacja interpolacji wielomianowej Lagrange’a.]{scripts.jl}
-
-Powyżej przedstawiona funkcja przyjmuje tablicę dwu-wymiarową węzłów do interpolacji w postaci $[[x_1 , y_1 ], [x_2 , y_2 ], ..., [x_n , y_n ]]$, gdzie $x_i$ i $y_i$ są współrzędnymi i-tego węzła do interpolacji, a $n$ to jest liczba wszystkich węzłów (w kodzie przechowywana jako nodesNum). W implementowaniu tej metody posłużyłem się wprost końcowym wzorem na wielomian interpolacyjny, który na sam koniec jest przechowywany i zwracany przy użyciu zmiennej interPoly. Zewnętrzna pętla for oznacza sumie występującej we wzorze, natomiast wewnętrzna odpowiada iloraz.
-
-Zaimplementowaną funkcję stestowałem przy użyciu kodu przedstawionego poniżej:
-\lstinputlisting[linerange={124-155}, caption=Testowanie funkcji interpolującej węzły za pomocą metody Lagrange’a.]{scripts.jl}
-
-Kod źródłowy z listingu 2. składa się z kilku ważniejszych etapów. Pierwszym z nich jest
-wygenerowanie 4 zestawów węzłów do interpolacji, po 11 węzłów na każdy zestaw. Ta ilość wynika z ustalonego przeze mnie przedziału na osi $X = [-100, 100]$ (tak, aby dla $x = 0$ występował węzeł). Dla potrzeb późniejszego zastosowania algorytmu interpolacji Newtona, węzły te są równoodległe od siebie. Na osi Y również przyjąłem taki sam przedział. Wygenerowane zestawy węzłów zostaną później użyte w innych metodach interpolacji.
-
-Kolejnym etapem jest interpolowanie każdego z 4 zestawów węzłów metodą Lagrange’a oraz wygenerowanie wykresu, na którym będą zaznaczone węzły danego zestawu oraz wielomian interpolujący te węzły.
-
-Ostatnim etapem jest wyświetlenie wszystkich wykresów w odpowiedni sposób.
-
-Wynik uruchomienia powyższego skryptu przedstawia figure 1. Przedstawione są na nim cztery wykresy – każdy jeden został utworzony na podstawie odpowiedniego zestawu węzłów.
-
-Jak można dostrzec, napisana przeze mnie funkcja prawidłowo interpoluje wszystkie węzły, ponieważ wykres wielomianu interpolującego zawiera w sobie każdy z tych węzłów.
-
-\begin{figure}[htp] \centering{
-\includegraphics[scale=0.3]{figure-1.pdf}}
-\caption{Wynik uruchomienia skryptu z listingu 2.}
-\end{figure}
-\newpage
-\section{Własna implementacja interpolacji wielomianowej Newton’a.}
-Implementacja interpolacji wielomianowej Newton’a:
-\lstinputlisting[linerange={18-52}, caption=Implementacja interpolacji wielomianowej Newton’a.]{scripts.jl}
-
-Powyżej przedstawiona funkcja przyjmuje tablicę dwu-wymiarową węzłów do interpolacji w postaci $[[x_1 , y_1 ], [x_2 , y_2 ], ..., [x_n , y_n ]]$, gdzie $x_i$ i $y_i$ są współrzędnymi i-tego węzła do interpolacji, a $n$ to jest liczba wszystkich węzłów (w kodzie przechowywana jako nodesNum). W implementowaniu tej metody również posłużyłem się wprost końcowym wzorem na wielomian interpolacyjny. Dodatkowo wprowadziłem pewne optymalizacje, żeby nie wyliczać kilka razy tych samych danych. Na samym początku obliczane są współczynniki dla każdego z wyrazów sumy wielomianu interpolującego, które będą przechowywane w pierwszym wierszu macierzy, która posłużyła mi do tych obliczeń. Na koniec krokowo tworzę wzór wielomianu interpolującego, który na sam koniec jest przechowywany i zwracany przy użyciu zmiennej interPoly.
-
-Należy zaznaczyć, że funkcja zakłada równoodległość dostarczonych węzłów do interpolacji.
-
-Zaimplementowaną funkcję stestowałem przy użyciu kodu przedstawionego poniżej:
-\lstinputlisting[linerange={159-179}, caption=Testowanie funkcji interpolującej węzły za pomocą metody Newton’a.]{scripts.jl}
-
-Kod źródłowy z listingu 4. składa się z dwóch ważniejszych etapów. Pierwszym z nich jest interpolowanie każdego z 4 zestawów węzłów metodą Newton’a oraz wygenerowanie wykresu, na którym będą zaznaczone węzły danego zestawu oraz wielomian interpolujący te węzły.
-
-Drugin etapem jest wyświetlenie wszystkich wykresów w odpowiedni sposób.
-
-Wynik uruchomienia powyższego skryptu przedstawia figure 2. Przedstawione są na nim cztery wykresy – każdy jeden został utworzony na podstawie odpowiedniego zestawu węzłów.
-
-Jak można dostrzec, napisana przeze mnie funkcja prawidłowo interpoluje wszystkie węzły, ponieważ wykres wielomianu interpolującego zawiera w sobie każdy z tych węzłów. Ponadto porównując te wykresy z odpowiednimi wykresami z figure 1. (odpowiednie zestawy węzłów) można zauważyć, ze wykresy są identyczne $\rightarrow$ obie metody musiały zwrócić ten sam wielomian.
-\begin{figure}[htp] \centering{
-\includegraphics[scale=0.3]{figure-2.pdf}}
-\caption{Wynik uruchomienia skryptu z listingu 4.}
-\end{figure}
-\newpage
-\section{Wykorzystanie interpolacji wielomianowej z pakietu Polynomials oraz podsumowanie dotychczasowych metod na jednym wykresie.}
-
-\lstinputlisting[linerange={183-209}, caption=Wykorzystanie funkcji polyfit z pakietu Polynomials w celu znalezienia wielomianu interpolującego wygenerowane wsześniej węzły oraz narysowanie wykresów wielomianów interpolujących osiągniętych za pomocą trzech różnych metod/funkcji.]{scripts.jl}
-
-Kod źródłowy z listingu 5. składa się z dwóch ważniejszych etapów. Pierwszym z nich jest interpolowanie każdego z 4 zestawów węzłów za pomocą metody Lagrange’a, następnie Newton’a, i na koniec za pomocą funkcji polyfit z pakieru Polynomials, jak też chciano w poleceniu.
-
-Drugin etapem jest wyświetlenie wszystkich wykresów
-
-Wynik uruchomienia powyższego skryptu przedstawia figure 3. Przedstawione są na nim cztery wykresy w odpowiedni sposób: jeden wykres = jeden zestaw węzłów = 3 metody interpolacji.
-
-Na przedstawionych wykresach najlepiej widać, jak wszystkie trzy użyte implementacje (w tym dwie własne) zwracają ten sam wynik, zarówno w postaci wykresu wielomianu interpolującego, jak i jego wzoru. Dzieje się tak dlatego, ponieważ wielomiany interpolujące węzły muszą je zawierać, a więc dla skończonej ilości ściśle określonych argumentów muszą przyjmować ściśle określone wartości, przy określeniu jedynie jednego wspólnego wzoru dla całego przedziału. Można z tego wywnioskować, że wielomian interpolujący węzły nie zależy od metody interpolacji, ale tylko od rozmieszczenia węzłów do interpolacji.
-\begin{figure}[htp] \centering{
-\includegraphics[scale=0.3]{figure-3.pdf}}
-\caption{Wynik uruchomienia skryptu z listingu 5.}
-\end{figure}
-\newpage
-\section{Porównanie opisanych wcześniej metod interpolacji pod względem czasu interpolowania, interpolacja funkcjami sklejanymi a interpolacja wielomianami, demonstracja efektu Runge'go.}
-
-\lstinputlisting[linerange={58-109}, caption=Wykorzystanie funkcji polyfit z pakietu Polynomials w celu znalezienia wielomianu interpolującego wygenerowane wsześniej węzły oraz narysowanie wykresów wielomianów interpolujących osiągniętych za pomocą trzech różnych metod/funkcji.]{scripts.jl}
-
-\lstinputlisting[linerange={113-119}, caption=Wyświetlanie wykresu prezentującego analizę czasu wyszukiwania wielomianu interpolującego węzły w zależności od ilości tych węzłów\, dla trzech różnych implementacji.]{scripts.jl}
-
-Wykonując kolejno skrypty z listingów 6. oraz 7. można otrzymać wykres przedstawiający przykładową analizę czasową wyszukiwania wielomianu interpolującego węzły w zależności od ich ilości oraz użytej implementacji. Przykładową analizę przedstawia wykres z figure 4.
-\begin{figure}[htp] \centering{
-\includegraphics[scale=0.8]{figure-5.pdf}}
-\caption{Wykres zależności czasu wyszukiwania wielomianu interpolującego węzły w zależności od ich ilości oraz użytej implementacji.}
-\end{figure}
-\newpage
-Na wykresie z figure 4. zostały przedstawione średnie czasy wykonania odpowiednich metod w zależności od ilości przekazanych węzłów, wraz ze słupkami błędów reprezentujących odchylenie standardowe z 10 pomiarów na każdą sytuację.
-
-Sensowny wykres bardzo trudno było uzyskać z powodu bardzo mały czasów wykonywania i minimalnych zakłóceń wykonywania na serwerach JuliaBox. Dlatego też zredukowałem maksymalną ilość węzłów do 21, gdyż dodatkowo dla większej ilości nie możliwe było obliczenie silnii i zapisanie jej wyniku do odpowiedniej zmiennej typu Int.
-
-Z przedstawionego wykresu można wywnioskować, że złożoność czasowa metody Newton’a, jak i funkcji polyfit z pakietu Polynomials jest niemalże jednostkowa, natomiast metody Lagrange’a – liniowa.
-
-Uruchamiając jedynie skrypt z listingu 6. można otrzymać przykładowy zbiór wykresów, przedstawiony na figure 5.
-
-Na wykresach tego zbioru zostały nie tylko pokazane wykresy wielomianów interpolujących węzły za pomocą różnych metod, ale i wykresy interpolacji węzłów funkcjami sklejanymi (w tym funkcjami liniowymi i trzeciego stopnia). Na podstawie tych wykresów można wysunąć poniższe wnioski:
+\section{Właściwa realizacja projektu}
+\subsection{Zakupione i wykorzystane przedmioty w projekcie}
 \begin{enumerate}[a)]
-\item interpolacja funkcjami liniowymi jest to po prostu zwykłe łączenie punktów odcinkami (nie zalecane do przedstawiania danych na wykresie, szczególnie w fizyce);
-\item interpolacja funkcjami trzeciego stopnia bardzo ładnie zachowuje się w bliskich otoczeniach węzłów (funkcja jest gładka, nie tak jak w przypadku interpolacji funkcjami liniowymi);
-\item funkcją sklejana interpolująca zadane węzły ma wykres leżący w pobliżu węzłów, natomiast w przypadku interpolacji wielomianem wykres znacząco odbiega od węzłów na krańcach przedziału, amplituda wykresu zaczyna drastycznie rosnąć (opisany później efekt Runge'go).
-\end{enumerate}
-Na kolejnych wykresach z tego samego zbioru można dostrzec pewną wadę interpolacji wielomianami – wraz ze wzrostem ilości węzłów podlegających interpolacji wartości wielomianu interpolującego węzły na krańcach przedziału zaczynają mocno oscylować z szybko rosnącą amplitudą. Ta wada jest nazywana efektem Runge'go.
+\item 100g zwierciadełek prostych o zbliżonych wymiarach 1cm x 1cm (większość ze względu na wady produkcyjne nie nadawała się do użycia).
 
-Efekt Runge’go jest to pogorszenie jakości interpolacji wielomianowej, pomimo zwiększenia liczby interpolowanych węzłów (naprzeciw rozsądkowi). To zjawisko jest spowodowane głównie interpolowaniem wielomianami wysokich stopni przy nałożonym warunku równoodległości węzłów.
+W projekcie posłużyły ostatecznie do zbudowania układu optycznego, dzięki któremu można było umieścić źródło światła w dowolnym miejscu (w przyszłości jak najbliżej radiatora).
+
+\includegraphics[scale=0.5]{images/1.jpg}
+\item Silnik szczotkowy na prąd stały Redox o maksymalnej prędkośći obrotowej 20000 obr./min., poborze prądu przy starcie 7,6 A, podczas pracy 1,8 A, napięciu znamionowym 7,2 V - 1sztuka.
+
+W projekcie został wykorzystany jako napęd wirujących luster odchylających puszczaną na nie wiązkę laserową w kierunku poziomym (potrzebna jest możliwie jak największa prędkość oraz moment obrotowy, dlatego został użyty taki silnik).
+
+\includegraphics[scale=0.5]{images/2.jpg}
+\item Dioda laserowa czerwona 5mW, 650nm, na napięcie 5V, moduł Iduino ST1172 - 1 sztuka.
+
+W projekcie została użyta jako źródło mocnego, skupionego światła, dzięki czemu można było swobodnie manipulować wiązką i nie potrzebne było stosowanie soczewek.
+\item Płytka stykowa, 830 otworów, 126 wierszy, 4 magistrale zasilające - 1 sztuka.
+
+W projekcie posłużyła jako płytka prototypowa (podstawa) dla elektroniki projektowane systemu.
+\item Mikrokontroler AVR - ATMega8A-PU DIP - 1 sztuka.
+
+W projekcie został użyty jako główny procesor systemu, który za pomocą programatora, taśmy i odpowiednio podpiętych przewodów można było łatwo programować.
+\item Programator AVR zgodny z USBasp ISP + taśma IDC - po 1 sztuce.
+
+W projekcie ten zestaw posłużył jako interfejs między komputerem (w którym można było napisać kod źródłowy, na podstawie którego został wygenerowany program dla mikrokontrolera) a mikrokontrolerem (który sterował systemem).
+\item Zestaw przewodów połączeniowych 20cm, m-m, m-ż, ż-ż, każdy rodzaj po 40 sztuk.
+
+W projekcie posłużyły jako "luźne" połączenia pomiędzy odpowiednimi komponentami urządzenia. Kilka złączonych razem w jeden przewód stanowiło długi kabel.
+\item Zestaw 140 przewodów do płytek stykowych.
+
+W projekcie posłużyły do łączenia wierszy płytki stykowej w celu zbudowania odpowiedniego układu elektronicznego.
+\item Zestaw diod LED 5mm - 4 sztuki.
+
+W projekcie posłużyły jako kontrolki - interfejs wyjściowy dla użytkownika.
+\item Zestawy rezystorów 1/4W: 10 kOhm, 1 kOhm, 100 Ohm, 1 Ohm.
+
+W projekcie zostały użyte jako rezystory redukujące prąd w poszczególnych obwodach.
+\item Nakrętka chromowana do baterii wannowej 3/4 - 1 sztuka.
+
+W projekcie została użyta jako wirujące lustra (gdyż jest to prawdopodobnie symetryczny element, o przekroju poprzecznych zbliżonym do sześciokąta foremnego, posiadający ściane boczne w formie "zwierciadeł płaskich".
+\item Odbiornik i nadajnik podczerwieni LiteOn 940nm - 1 para.
+
+W projekcie para tych elementów posłużyła do testowania fazy obrotu nakrętki chromowanej, a przez to i także do zliczania prędkości obrotowej silnika.
+\item Tack Switch z nasadką - 5 sztuk.
+
+W projekcie zostały użyte jako przyciski - interfejs wejściowy dla użytkownika.
+\item Tranzystor bipolarny NPN BD911 100V/15A - 1 sztuka.
+
+W projekcie został użyty jako "klucz" obwodu silnika pracującego przy wysokim prądzie. Dzięki niemu możliwa była zmiana prędkości obrotowej za pomocą pośrednio podłączonego na bramkę sygnału PWM z mikrokontrolera.
+\item Tranzystor bipolarny NPN BC639 80V/1A - 1 sztuka.
+
+W projekcie został wykorzystany w układzie Darlingtona, którego zadaniem było sterowanie obrotami silnika. Był on potrzebny, gdyż szyna zasilająca z portu USB 5V była za słaba aby pełnić tą funkcję prawidłowo.
+\item dioda zaporowa o dużym maksymalnym prądzie i napięciu.
+
+W projekcie została wykorzystana jako zabezpieczenie całego układu przed zniszczeniem z powodu odłączenia zasilania z pracującego silnika, który w tej sytuacji pracował jak cewka.
+\item Tranzystor unipolarny typu nMOSFET, o małym maksymalnym prądzie i napięciu - 3 sztuki.
+
+W projekcie posłużyły jako elektronika dla mniejszych prądów, bezpośrednio na płytce stykowej.
+\item Nakrętka metalowa - 1 sztuka.
+
+W projekcie posłużyła do utrzymywania nakrętki chromowanej oraz możliwie jak najlepszego jej wyśrodkowania.
+
+\item Listewki drewniane, grube tekturki, brzeszczot, klej do drewna.
+
+W projekcie zostały wykorzystane do zbudowania szkieletu konstrukcji, do którego zostały zamontowane poszczególne komponenty.
+\end{enumerate}
+\subsection{Wydobyte z niedziałających urządzeń przedmioty wykorzystane w projekcie.}
+\begin{enumerate}[a)]
+\item Wentylator 8cm x 8cm (wydobyty z niesprawnego zasilacza komputerowego)
+
+W projekcie posłużył jako wentylator chłodzący zamontowany radiator, do którego przykręcony był tranzystor sterujący silnikiem (pracując przy wysokim prądzie bardzo szybko się nagrzewał).
+\item Prosty radiator - gruba alumiowa płytka (wydobyty z niesprawnego zasilacza komputerowego)
+
+W projekcie posłużył jako radiator tranzystora sterującego pracą silnika.
+\item Oraz inne mniejsze rzeczy, które zostały wykorzystane do konstrukcji.
+
+\end{enumerate}
+\subsection{Inne wykorzystane urządzenia.}
+\item Zasilacz komputerowy.
+
+W projekcie posłużył jako stabilne źródło zasilania elementów nie będących częścią elektroniki cyfrowej.
+\begin{enumerate}[a)]
+\end{enumerate}
+\subsection{Schemat obwodów elektrycznych w ostatecznej wersji urządzenia.}
 \begin{figure}[htp] \centering{
-\includegraphics[scale=0.3]{figure-4.pdf}}
-\caption{Wynik uruchomienia skryptu z listingu 6.}
+\includegraphics[scale=0.8]{project_schem.pdf}}
+\caption{Kompletny schemat obwodów elektrycznych w urządzeniu.}
 \end{figure}
 \newpage
-\section{Algorytmy interpolacji stosowane w grafice komputerowej (na
-przykładzie powiększania obrazu w programie GIMP).}
-W programie GIMP można się spotkać z następującymi metodami interpolacji podczas skalowania warstwy lub całego obrazu: linear, cubic oraz brak interpolacji - none. Teraz postaram się opisać każdą z tych metod w prosty sposób.
+\subsection{Opis poszczególnych grup zaznaczonych na schemacie.}
+\begin{enumerate}[1.]
+\item Zasilacz komputerowy.
 
-Mając bazowy obraz o wymiarach 16x16, taki jak przedstawiony na ilustracji 1., metoda interpolacji lub brak w przypadku powiększenia obrazu 4-krotnie spowoduje poniżej opisany efekt:
+Zasilacz komputerowy po podłączeniu zasilania jest uruchomiony tylko wtedy, gdy pin PS\_ON jest zwarty z masą tego zasilacza. Takie zwarcie powoduje otwarcie się tranzystora nMOSFET oznaczonego grupą 7. Z tego zasilacza zostały wykorzystane linie 3,3 V, 5V oraz 12V.
 
-\begin{table}[h]
-\fontsize{8pt}{10pt}
-\selectfont
-\begin{tabular}{|p{3.4cm}|p{8.4cm}|} \hline
-a) none:  & \\ \hline
-\vspace \ \includegraphics[scale=2.0]{none-alg.png} &
-Na przykładzie skalowania obrazka 3x3 px (piksele zostały zaznaczone „obecnością czerwonego koloru”) do rozmiaru 6x4 px (piksele zostały zaznaczone „obecnością zielonego koloru”). Nakładając i odpowiednio rozciągając obrazek wyjściowy na wejściowy, otrzymamy odpowiednie wzajemne rozmieszczenie pikseli. Każdy piksel z obrazka wyjściowego osiągnie kolor piksela obrazka wejściowego, który leży najbliżej niego (przykładowe zostały zaznaczone szarymi liniami). Ilustracja 2. \\ \hline
-a) linear:  & \\ \hline
-\vspace \ \includegraphics[scale=2.0]{linear-alg.png} &
-Na przykładzie skalowania obrazka 3x3 px (piksele zostały zaznaczone „obecnością czerwonego koloru”) do rozmiaru 11x7 px (piksele zostały zaznaczone „obecnością zielonego koloru”). Nakładając i odpowiednio rozciągając obrazek wyjściowy na wejściowy, otrzymamy odpowiednie wzajemne rozmieszczenie pikseli. Łączymy sąsiednie piksele obrazka wejściowego abstrakcyjnymi liniami, które są liniowym gradientem przechodzącym od koloru piksela na jednym końcu do koloru piksela z drugiego końca. Takie postępowanie można przyrównać do interpolacji funkcją sklejaną (liniowymi), gdzie węzłami są piksele obrazka wejściowego. W taki sposób otrzymamy siatkę funkcji interpolujących (poziomych i pionowych). (przykładowe abstrakcyjne linie zaznaczone szarymi liniami, w tym na jednej został pokazany gradient od czerwonego do niebieskiego). Ilustracja 3. \\ \hline
-a) cubic:  & \\ \hline
-\vspace \ \includegraphics[scale=2.0]{cubic-alg.png} &
-Przykład został przygotowany w sposób analogiczny do przykładu dla interpolacji liniowej. Różnica w tym sposobie interpolacji polega jedynie na zastąpieniu interpolacji funkcji sklejanej (liniowymi) na interpolację funkcją sklejaną (wielomianami trzeciego stopnia). W ten sposób można otrzymać siatkę funkcji interpolujących (poziomych i pionowych), jedna taka siatka na jedną składową koloru. Piksel obrazka wyjściowego skorzysta z wartości składowych z siatek w punktach, gdzie on występuje. Ilustracja 4. \\ \hline
-\end{tabular}
-\begin{tabular}{c c c c}
-\includegraphics[scale=1.0]{base.png} &
-\includegraphics[scale=1.0]{none.png} &
-\includegraphics[scale=1.0]{linear.png} &
-\includegraphics[scale=1.0]{cubic.png} \\
-Ilustracja 1. base &
-Ilustracja 2. none &
-Ilustracja 3. linear &
-Ilustracja 4. cubic \\
-\end{tabular}
-\end{table}
+\item Układ Darlingtona służący do sterowania pracą silnika wirujących luster.
+
+Na bazę tranzystora NPN Q5 podawany jest sygnał PWM z ATMegi, który w zależności od wypełnienia powoduje szybszą oraz wolniejszą pracę silnika. Przy podawaniu logicznej jedynki tranzystor ten jest otwierany, a obwód 3,3V - rezystory - kolektor i emiter tanzystora Q5 - baza i emiter tranzystora Q4 jest zamykany, w związku z czym tranzystor NPN Q4 (przystosowany do dużych mocy) zaczyna przewodzić prąd. Skutkiem tego jest zamknięcie obwodu 5V - silnik - kolektor i emiter tranzystora Q4, a więc i uruchomienie silnika oznaczonego grupą 3.
+
+Do tego zadania nie można było użyć jedynie tranzystora Q4, gdyż linia 5V z portu USB była zbyt słaba aby otworzyć ten tranzystor (również gwałtownie spadało napięcie w całym obwodzie)
+
+\item Silnik - napęd wirujących luster odchylających wiązkę lasera w poziomym kierunku.
+
+Ten silnik na prąd stały, wysokich obrotów został wykorzystany jak napęd modułu wirujących luster. Ze względu na swoją specyfikację, podczas pracy pobiera duży prąd, a więc i w chwili wyłączania mógłby zniszczyć układ. Z tego powodu została zastosowana dioda zaporowa, która po odłączeniu silnika (który zaczyna pracować jak cewka) zwiera jego piny.
+
+\item Wentylator.
+
+Wentylator dla tego urządzenia zaczął być konieczny po zaimplementowaniu sterowania silnikiem. Tranzystor zamykający obwód silnika, pod wpływem wysokiego prądu zaczął się gwałtownie przegrzewać, przez co było potrzebne przykręcenie go do radiatora. Jednak to nie wystarczało, gdyż wtedy cały radiator zaczął się nagrzewać do wysokich temperatur, zatem trzeba było zapewnić przepływ powietrza wokół radiatora.
+
+\item Obwód lasera - źródła światła w projektorze.
+
+W skład obwodu wchodzi tranzystor nMOSFET małych mocy, który umieszony w obwodzie w kolejności za diodą laserową, działał jak klucz, przez co można było wyłączać i włączać laser. Pomimo napięcia 5V z zasilacza przykładanego na pin anodę diody laserowej, nie potrzebny był tranzystor dużych mocy, gdyż maksymalny pobór prądu wynosił około 25 mA. Na bramkę tranzystora jest podawany sygnał z pinu PC4 mikrokontrolera.
+
+\item Obwód nadajnika podczerwieni.
+
+Jest to prosty obwód z koniecznie dołożonymi rezystorami zmniejszającymi prąd przepływający przez diodę IR. Po uruchomieniu zasilacza nadajnik zaczyna wysyłać promieniowanie podczerwone. Zasilanie z linii 5V zasilacza. Nadajnik wraz z odbiornikiem służą do wyzwalania przerwań układowych w mikrokontrolerze, dzięki czemu urządzenie wie, w której fazie obrotu znajdują się wirujące lustra.
+
+\item Tranzystor służący jako klucz do sterowania pracą zasilacza.
+
+Jest to tranzystor nMOSFET małych mocy, który po otwarciu zwiera pin PS\_ON z pinem masy w zasilaczu, przez co zasilacz się uruchamia. Na bramkę tego tranzystora podawana jest wartość logiczna z pinu PC5 mikrokontrolera.
+
+\item Obwód odbiornika podczerwieni.
+
+Jest to prosty obwód z rezystorem ograniczającym prąd oraz fototranzystorem, który po odebraniu promieniowania podczerwonego się otwiera i zaczyna przewodzić prąd. Obwód zasilany jest linią 5V z portu USB. Po otwarciu tranzystora prąd trafia na pin przerwania układowego 0 mikrokontrolera.
+
+\item Tranzystor służący do testowania obecności zasilania doprowadzanego do zasilacza.
+
+Gdy zasilacza jest włączony przełącznikiem, ale nie pracuje, na pinie PS\_ON pojawia się napięcie 5,5 V. Właśnie to napięcie służy do sprawdzania, czy zasilacz jest gotowy do pracy. Podawane na bramkę tranzystora nMOSFET otwiera go, przez co napięcie 5V z linii z portu USB trafia na pin PC2 mikrokontrolera.
+
+\item Główny mikrokontroler urządzenia - ATMega8A-PU.
+
+Pełni on rolę procesora urządzenia. Jego wykorzystanie i działanie, wraz z kodem źródłowym zostanie przedstawione w dalszych sekcjach.
+
+\item Grupa rezystorów dla pinów przerwań układowych mikrokontrolera.
+
+Zastosowanie tych tranzystorów wymusza przepływ prądu do pinu mikrokontrolera w przypadku logicznej jedynki, natomiast w przypadku logicznego zera = braku prądu łączy z masą.
+
+\item Grupa czterech diod LED - kontrolek. Interfejs wyjściowy dla użytkownika.
+
+Jest to grupa czterech podobnych obwodów elektrycznych. Każdy obwód zaczyna się od określonego pinu (odpowiadającego konkretnej kontrolce), diody LED i rezystora ograniczającego prąd w obwodzie.
+
+\item Grupa pięciu przycisków typu Tact Switch. Interfejs wejściowy dla użytkownika.
+
+Jest to grupa pięciu podobnych do siebie obwodów elektrycznych. W skład każdego obwodu wchodzą: linia 5V z portu USB z jednej strony, masa poprzedzona rezystorem ograniczającym prąd w przypadku naciśnięcia przycisku oraz wyjście do konkretnego pinu mikrokontrolera z drugiej strony. Po naciśnięciu przycisku zwierają sie obie strony, a z powodu obecności rezystora prąd trafia na pin.
+
+\item Programator AVR.
+
+Jest to główny element służący do zasilania elektroniki cyfrowej urządzenia oraz do programowania mikrokontrolera za pomocą linii MISO, MOSI i SCK.
+\end{enumerate}
+\subsection{Kod źródłowy mikrokontrolera w ostatecznej wersji.}
+\lstinputlisting{main.c}
+\subsection{Budowanie poszczególnych modułów urządzenia.}
+\begin{enumerate}[1.]
+\item Moduł wirujących luster.
+
+Był to i jest nadal najtrudniejszy moduł do zaprojektowania i zbudowania. Problemem, który ciągnął się za mną przez cały czas była niemożliwość idealnego osadzenia wirującego komponentu na wale silnika, przez co przy większych obrotach pojawiało się bicie. Pomimo, że wirujący komponent nie wyskakiwał z osi, to powodował on dosyć spore wibracje, które były głośne.
+\begin{enumerate}[a)]
+\item Na początku był pomysł z zakupieniem lekkiej nakrętki i zwierciadełek płaskich. Po dokonaniu zakupów, przykleiłem zwierciadełka do ścian bocznych nakrętki. Po stestowaniu modułu okazało się, że skończona różna ilość kleju użytego do przyklejnia każdego zwierciadełka powodowała odchylanie wiązki pod różnymi kątami, co było nie do zaakceptowania. Efekt został przedstawiony na filmiku 2.
+
+\includegraphics[scale=0.5]{images/3.jpg} 
+\includegraphics[scale=0.5]{images/4.jpg} 
+
+\item Następnym pomysłem, który ostatecznie zaakceptowałem, było zakupienie nakrętki chromowanej do baterii wannowej, i za pomocą różnych symetrycznych przedmiotów osadzenie jej na wale silnika. Takie rozwiązanie ze względu na to, że proces produkcji takich nakrętek jest bardziej staranny niż ręczne klejenie, umożliwiło odpowiednie osadzenie nakrętki, co pozwoliło na naświetlenie jednej linii za pomocą każdej ze ścian nakrętki. Pomimo owalnych brzegów pomiędzy ścianami bocznymi, część pozostała zwierciadłem płaskim.
+
+\includegraphics[scale=0.5]{images/5.jpg} 
+\includegraphics[scale=0.5]{images/6.jpg} 
+\includegraphics[scale=0.5]{images/7.jpg} 
+
+Jednak z powodu, że ta nakrętka nie była na szytwno osadzona na wale, to wraz prędkością obrotową silnika odchylała się pod minimalnie różnym kątem, co przedstawione zostało na filmiku 1.
+\end{enumerate}
+
+\item Moduł napędu wirujących luster.
+
+Był to jeden z większych problemów podczas budowy układu. Z powodu zakupionego silnika wysokich obrotów, pobierał on bardzo duży prąd podczas pracy, a w szczególności podczas startu. Dlatego potrzebne było zastosowanie specjalnego tranzystora przystosowanego na duże prądy. 
+\begin{enumerate}[a)]
+
+\item Pierwszym podejściem, po przestraszeniu się działania tranzystorów bipolarnych i ich przewodzenia prądu pomiędzy pinami, zakupiłem tranzystory typu nMOSFET. Jednak z powodu, że pracuje on na wysokich prądach, potrzebował on specjalnego napięcia progowego, aby otworzyć ten tranzystor. Linia 5V z portu USB była tak słaba, że przy obciążeniu przez elektronikę cyfrową oraz inne komponenty, nie wystarczała na jakiekolwiek otwarcie tego tranzystora. Nad tym problemem spędziłem dużo czasu, próbując różnych podejść, czasami również śmiesznych. 
+
+\item Po konsultacjach z prowadzącym okazało się, że ten problem może rozwiązać tranzystor bipolarny, gdyż nie wymaga on odpowiedniego napięcia baza-emiter względem kolektor-emiter. Po zastosowaniu zakupionego na początku tranzystora NPN dużych prądów, problem się znacznie rozwiązał, jednak nadal słaba linia 5V z portu USB nie wystarczała na sterowanie tranzystorem, a w dodatku gwałtownie spadało napięcie na całym obwodzie. Dlatego podświadomie wykorzystałem układ Darlingtona, wykorzystując przy tym tanzystor NPN małych prądów, który było otwierany na podstaiwe sygnału PWM z mikrokontroleta, a to powodowało podanie prądu z linii 3,3 V z zasilacza na bazę właściwego tranzystora. Dzięki temu układowi udało się w 100\% sterować obrotami silnika.
+
+\includegraphics[scale=0.5]{images/3.jpg} 
+\includegraphics[scale=0.5]{images/4.jpg} 
+
+\end{enumerate}
+
+\item Moduł nadajnika i odbiornika podczerwieni.
+
+Z tym modułem nie było żadnych problemów. Od samego początku spełniał zaplanowane przeze mnie zadanie. Jednak przed wymyśleniem zastosowania takiego układu do sprawdzania fazy obrotu nakrętki minęło dużo czasu. Właściwe podpięcie nadajnika i odbiornika do płyty głównej oraz przede wszystkim właściwe wzajemne ustawienie tych komponentów względem siebie i wirującej nakrętki pozwoliło na bardzo szybki, dokładny i sprawny test fazy obrotu nakrętki (takich faz było 6, gdyż każda ze ścian odbijała w pewnym momencie promieniowanie podczerwone z nadajnika do odbiornika).
+
+Po odebraniu promieniowania podczerwonego, wywoływała się funkcja obsługi przerwania systemowego INT0.
+
+Dzięki odpowiednio napisanej funkcji przedstawionej w sekcji wyżej, udało się uzyskać odpowiednią, zadaną prędkość obrotową silnika. Udokumentowane zostało do na zdjęciach oraz filmiku 4. Dokładna wartość prędkości obrotowej została odczytana przy pomocy przycisków 3 i 4, co również zostało przedstawione na filmiku. Po wciśnięciu przycisku 5, uruchamia się algorytm połówkowego znajdowania PWM, który przy odpowiednim zasilaniu spowoduje, że silnik będzie się obracał z zadaną prędkością. Należy odpowiednio umieścić względem siebie nadajnik i odbiornik podczerwieni, aby lekko świeciła się niebieskia kontrolka. Świeci się ona, gdy wywoływane jest przerwanie układowe. Po jej mignięciu kończy się działanie algorytmu, laży wtedy odstawić moduł, aby zachować ostatnią uzyskaną prędkość obrotową.
+
+\includegraphics[scale=0.5]{images/8.jpg} 
+\includegraphics[scale=0.5]{images/9.jpg} 
+\includegraphics[scale=0.5]{images/10.jpg} 
+\includegraphics[scale=0.5]{images/11.jpg} 
+
+\item Ogólna konstrukcja urządzenia.
+
+\includegraphics[scale=0.5]{images/12.jpg} 
+\includegraphics[scale=0.5]{images/13.jpg} 
+\includegraphics[scale=0.5]{images/14.jpg} 
+\includegraphics[scale=0.5]{images/15.jpg} 
+\includegraphics[scale=0.5]{images/16.jpg} 
+\includegraphics[scale=0.5]{images/17.jpg} 
+\includegraphics[scale=0.5]{images/18.jpg} 
+\includegraphics[scale=0.5]{images/19.jpg}
+\includegraphics[scale=0.5]{images/20.jpg} 
+\includegraphics[scale=0.5]{images/21.jpg} 
+\includegraphics[scale=0.5]{images/22.jpg} 
+\includegraphics[scale=0.5]{images/23.jpg}
+\includegraphics[scale=0.5]{images/24.jpg} 
+\includegraphics[scale=0.5]{images/25.jpg}
+
+
+
 \end{document}
